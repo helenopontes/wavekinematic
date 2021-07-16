@@ -36,7 +36,8 @@ class Jonswap:
             W = ((4*(pi**2)*self.d)/(self.g*((1/i)**2)))
             f = (1 + (0.666*W + 0.445*W ** 2 - 0.105*W**3 + 0.272*W**4))
             self.L[j] = ((self.T[j]*sqrt(self.g*self.d)*sqrt(f/(1+W*f))))
-            self.k[j] = (2*pi/self.L[j])
+            #self.k[j] = (2*pi/self.L[j])
+            self.k[j] = self.w[j]*self.w[j]/self.g
             j = j+1
 
         # Guardando dados no excel
@@ -44,13 +45,18 @@ class Jonswap:
         excel_espectro = pd.DataFrame(espectro_valores)
         excel_espectro.to_excel('espectro_jp.xlsx')
 
+        # Guardando dados no excel - informações das ondas
+        espectro_ondas_valores = {'Frequência': self.w, 'Período': self.T,'Amplitude': self.A, 'FaseInicial': self.fi, 'Comprimento': self.L}
+        excel_espectro_ondas = pd.DataFrame(espectro_ondas_valores)
+        excel_espectro_ondas.to_excel('espectro_ondas_jp.xlsx')
+
     def espectro(self, w):
         # definição do fator de forma (sig) para o espectro de jonswap
         if w <= self.wp:
             sig = 0.07
         else:
             sig = 0.09
-        return ((5/16)*(self.H**2)*(self.Tp)*((self.wp**4)/(w**5))*((self.e)**(-1.25*((w/self.wp)**(-4))))*(1-0.287*(math.log(self.y)))*(self.y**((self.e)**(-((w-self.wp)**2)/(2*(sig**2)*(self.wp**2))))))
+        return ((5/16)*(self.H**2)*((self.wp**4)/(w**5))*((self.e)**(-1.25*((w/self.wp)**(-4))))*(1-0.287*(math.log(self.y)))*(self.y**((self.e)**(-((w-self.wp)**2)/(2*(sig**2)*(self.wp**2))))))
 
     def amplitude(self, w, dw):
         S = self.espectro(w)
@@ -69,16 +75,21 @@ class Jonswap:
         return S*w**4
 
     def elevacao(self, w, t, A, nwave):
-        return (A*(sin(w*t-self.k[nwave]*self.x + self.fi[nwave])))
+        #return (A*(sin(w*t-self.k[nwave]*self.x + self.fi[nwave]))) - Modificação
+        return (A*(cos(self.k[nwave]*self.x - w*t + self.fi[nwave])))
 
-    def vel_horizontal(self, w, t, A, nwave):
-        return (A*w*((self.e)**(self.k[nwave]*self.z))*(sin(w*t-self.k[nwave]*self.x + self.fi[nwave])))
+    def vel_horizontal(self, w, t, A, nwave, z):
+        #return (A*w*((self.e)**(self.k[nwave]*self.z))*(sin(w*t-self.k[nwave]*self.x + self.fi[nwave])))
+        return (A*w*((self.e)**(self.k[nwave]*z))*(cos(self.k[nwave]*self.x - w*t + self.fi[nwave])))
 
-    def vel_vertical(self, w, t, A, nwave):
-        return (A*w*((self.e)**(self.k[nwave]*self.z))*(cos(w*t-self.k[nwave]*self.x+self.fi[nwave])))
+    def vel_vertical(self, w, t, A, nwave, z):
+        #return (A*w*((self.e)**(self.k[nwave]*self.z))*(cos(w*t-self.k[nwave]*self.x+self.fi[nwave])))
+        return (A*w*((self.e)**(self.k[nwave]*z))*(sin(self.k[nwave]*self.x - w*t + self.fi[nwave])))
 
-    def ac_horizontal(self, w, t, A, nwave):
-        return (A*(w**2)*((self.e)**(self.k[nwave]*self.z))*(cos(w*t-self.k[nwave]*self.x+self.fi[nwave])))
+    def ac_horizontal(self, w, t, A, nwave, z):
+        #return (A*(w**2)*((self.e)**(self.k[nwave]*self.z))*(cos(w*t-self.k[nwave]*self.x+self.fi[nwave])))
+        return (A*(w**2)*((self.e)**(self.k[nwave]*z))*(sin(self.k[nwave]*self.x - w*t + self.fi[nwave])))
 
-    def ac_vertical(self, w, t, A, nwave):
-        return ((-1)*A*(w**2)*((self.e)**(self.k[nwave]*self.z))*(sin(w*t-self.k[nwave]*self.x+self.fi[nwave])))
+    def ac_vertical(self, w, t, A, nwave, z):
+        #return ((-1)*A*(w**2)*((self.e)**(self.k[nwave]*self.z))*(sin(w*t-self.k[nwave]*self.x+self.fi[nwave])))
+        return ((-1)*A*(w**2)*((self.e)**(self.k[nwave]*z))*(cos(self.k[nwave]*self.x - w*t + self.fi[nwave])))
