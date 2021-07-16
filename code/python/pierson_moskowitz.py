@@ -46,7 +46,7 @@ class PM:
         
         #Colocando Data e Hora no nome do arquivo
         #data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
-        excel_espectro_pm = "espectro_pm"
+        excel_espectro_pm = "Irregular_PM_Espectro"
         excel_extensao = ".xlsx"
         excel_espectro.to_excel(excel_espectro_pm + data_hora + excel_extensao)        
         
@@ -59,7 +59,7 @@ class PM:
                 
         #Colocando Data e Hora no nome do arquivo
         #data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
-        excel_espectro_ondas_pm = "espectro_ondas_pm"
+        excel_espectro_ondas_pm = "Irregular_PM_Ondas"
         excel_extensao = ".xlsx"
         excel_espectro_ondas.to_excel(excel_espectro_ondas_pm + data_hora + excel_extensao)    
         

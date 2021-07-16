@@ -67,7 +67,7 @@ def regular():
         [sg.Button('Voltar'), sg.Button('Processar Dados'),
          sg.Button('Gerar Gráficos')],
         [sg.Text('Resultados:')],
-        [sg.Output(size=(60, 11))]
+        [sg.Output(size=(60, 11), key = '_output_')]
     ]
     return sg.Window(
         'Wave Kinematics - Ondas Regulares', layout=layout, finalize=True)
@@ -97,7 +97,7 @@ def irregular():
         [sg.Button('Voltar'), sg.Button('Processar Dados'),
          sg.Button('Gerar Gráficos')],
         [sg.Text('Resultados:')],
-        [sg.Output(size=(60, 11))]
+        [sg.Output(size=(60, 11), key = '_output_')]
     ]
     return sg.Window(
         'Wave Kinematics - Ondas Irregulares', layout=layout, finalize=True)
@@ -172,8 +172,12 @@ while True:
             k = round(wave1.k, 2)
             c = round(wave1.c, 2)
             L = round(wave1.L, 2)
+            
+            #Limpando tela do output
+            window.FindElement('_output_').Update('')
+            
             print(
-                f'Característica da onda: \nNúmero de Onda: {k} \nCeleridade: {c} \nComprimento de onda: {L}\n')
+                f'Característica da onda: \nTeoria de Onda: Airy\nNúmero de Onda: {k} \nCeleridade: {c} \nComprimento de onda: {L}\n')
 
             # Calculo percentual das velocidades e acelerações
             PVh = round(100*(uhL2/uhL0), 2)
@@ -217,7 +221,7 @@ while True:
                 excel1 = pd.DataFrame(dados_excel1)
                 #Colocando Data e Hora no nome do arquivo
                 data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
-                excel_airy_tempo = "airy_tempo"
+                excel_airy_tempo = "Regular_Airy_Tempo"
                 excel_extensao = ".xlsx"
                 excel1.to_excel(excel_airy_tempo + data_hora + excel_extensao)
                 #excel1.to_excel('airy_tempo.xlsx')
@@ -248,7 +252,7 @@ while True:
                 
                 #Colocando Data e Hora no nome do arquivo
                 data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
-                excel_airy_profundidade = "airy_profundidade"
+                excel_airy_profundidade = "Regular_Airy_Profundidade"
                 excel_extensao = ".xlsx"
                 excel2.to_excel(excel_airy_profundidade + data_hora + excel_extensao)
                 #excel2.to_excel('airy_profundidade.xlsx')
@@ -270,8 +274,12 @@ while True:
             k = round(wave2.k, 2)
             c = round(wave2.c, 2)
             L = round(wave2.L, 2)
+            
+            #Limpando tela do output
+            window.FindElement('_output_').Update('')            
+            
             print(
-                f'Característica da onda: \nNúmero de Onda: {k} \nCeleridade: {c} \nComprimento de onda: {L}\n')
+                f'Característica da onda: \nTeoria de Onda: Stokes\nNúmero de Onda: {k} \nCeleridade: {c} \nComprimento de onda: {L}\n')
 
             # Calculo percentual das velocidades e acelerações
             PsVh = round(100*(uthL2/uthL0), 2)
@@ -316,7 +324,7 @@ while True:
                 
                 #Colocando Data e Hora no nome do arquivo
                 data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
-                excel_stokes_tempo = "stokes_tempo"
+                excel_stokes_tempo = "Regular_Stokes_Tempo"
                 excel_extensao = ".xlsx"
                 excel3.to_excel(excel_stokes_tempo + data_hora + excel_extensao)
                 
@@ -346,7 +354,7 @@ while True:
                 
                 #Colocando Data e Hora no nome do arquivo
                 data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
-                excel_stokes_profundidade = "stokes_profundidade"
+                excel_stokes_profundidade = "Regular_Stokes_Profundidade"
                 excel_extensao = ".xlsx"
                 excel4.to_excel(excel_stokes_profundidade + data_hora + excel_extensao)
                 
@@ -569,8 +577,12 @@ while True:
             sig0 = sqrt(m0)
             Tz = 2*pi*sqrt(m0/m2)
             banda = sqrt(1-((m2**2)/(m0*m4)))
+            
+            #Limpando tela do output
+            window.FindElement('_output_').Update('')            
+            
             print(
-                f'Características espectrais: \nMomento de ordem 0: {m0} \nMomento de ordem 2: {m2} \nMomento de ordem 4: {m4} \nPeríodo médio de cruzamento zero: {Tz} \nDesvio padrão: {sig0}')
+                f'Características espectrais: \nEspectro: Pierson-Moskowitz\nMomento de ordem 0: {m0} \nMomento de ordem 2: {m2} \nMomento de ordem 4: {m4} \nPeríodo médio de cruzamento zero: {Tz} \nDesvio padrão: {sig0}')
             if banda < 0.6:
                 print('Espectro de banda estreita')
             else:
@@ -614,7 +626,7 @@ while True:
             
             #Colocando Data e Hora no nome do arquivo
             #data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
-            excel_pm_cinematica = "pm_cinematica"
+            excel_pm_cinematica = "Irregular_PM_Cinematica"
             excel_extensao = ".xlsx"
             excel5.to_excel(excel_pm_cinematica + data_hora + excel_extensao)            
             
@@ -633,8 +645,12 @@ while True:
             sig0 = sqrt(m0)
             Tz = 2*pi*sqrt(m0/m2)
             banda = sqrt(1-((m2**2)/(m0*m4)))
+            
+            #Limpando tela do output
+            window.FindElement('_output_').Update('')             
+            
             print(
-                f'Características espectrais: \nMomento de ordem 0: {m0} \nMomento de ordem 2: {m2} \nMomento de ordem 4: {m4} \nPeríodo médio de cruzamento zero: {Tz} \nDesvio padrão: {sig0}')
+                f'Características espectrais: \nEspectro: JONSWAP\nMomento de ordem 0: {m0} \nMomento de ordem 2: {m2} \nMomento de ordem 4: {m4} \nPeríodo médio de cruzamento zero: {Tz} \nDesvio padrão: {sig0}')
             if banda < 0.6:
                 print('Espectro de banda estreita')
             else:
@@ -678,7 +694,7 @@ while True:
             
             #Colocando Data e Hora no nome do arquivo
             #data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
-            excel_jonswap_cinematica = "jonswap_cinematica"
+            excel_jonswap_cinematica = "Irregular_Jp_Cinematica"
             excel_extensao = ".xlsx"
             excel6.to_excel(excel_jonswap_cinematica + data_hora + excel_extensao)            
             
