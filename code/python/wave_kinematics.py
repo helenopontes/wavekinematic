@@ -1,3 +1,4 @@
+from os import write
 import PySimpleGUI as sg
 import math
 from math import pi, cos, sqrt, sin, cosh, sinh
@@ -14,6 +15,10 @@ from jonswap import Jonswap
 import warnings
 warnings.filterwarnings("ignore")
 
+#Colocar data e hora
+from datetime import datetime
+##
+
 
 # Criar janelas e layouts
 
@@ -22,13 +27,21 @@ sg.theme('LightGrey1')
 
 def inicio():
     layout = [
+        [sg.Text('Wave Kinematics é para cálculo das propriedades cinemáticas de ondas.')],
         [sg.Frame(layout=[[sg.Radio('Ondas Regulares', 'tipo', key='regular', default=True), sg.Radio(
             'Ondas Irregulares', 'tipo', key='irregular')]], title='Qual teoria de onda será utilizada?', title_color='black')],
-        [sg.Button('Continuar')],
+        [sg.Button('Continuar'), sg.Button('Sobre')],
     ]
     return sg.Window(
         'Wave Kinematics', layout=layout, finalize=True)
 
+def sobre():
+    layout = [
+        [sg.Frame(layout=[[sg.Text('Autor: José Cícero de Assis Silva Junior\nVersão: 1.0\nCentro de Tecnologia-CTEC\nUniversidade Federal de Alagoas-UFAL\n2021')]], title='Sobre o aplicativo', title_color='black')],
+        [sg.Button('Voltar')],
+    ]
+    return sg.Window(
+        'About - Wave Kinematics', layout=layout, finalize=True)
 
 def regular():
     layout = [
@@ -72,7 +85,7 @@ def irregular():
                           [sg.Text('Pos. horizontal (m)'), sg.Input(
                               size=(10, 0), justification='center', key='posicao_horizontal', tooltip='Posição horizontal (x)')],
                           [sg.Text('Pos. vertical (m)    '), sg.Input(
-                              size=(10, 0), justification='center', key='posicao_vertical', tooltip='Posição horizontal (z)')]], title='Insira os valores de:', title_color='black')],
+                              size=(10, 0), justification='center', key='posicao_vertical', tooltip='Posição vertical (z)')]], title='Insira os valores de:', title_color='black')],
         [sg.Frame(layout=[[sg.Radio('Pierson-Moskowitz', 'espectro', key='pierson_moskowitz', default=True),
                            sg.Radio('Jonswap', 'espectro', key='jonswap')]], title='Qual espectro de onda será utilizado?', title_color='black')],
         [sg.Frame(layout=[[sg.Checkbox('Espectro de Energia  ', key='espectro'), sg.Checkbox(
@@ -91,7 +104,7 @@ def irregular():
 
 
 # Criar janelas iniciais
-janela1, janela2, janela3 = inicio(), None, None
+janela1, janela2, janela3, janela4 = inicio(), None, None, None
 
 # Criar Loop de eventos
 while True:
@@ -107,6 +120,15 @@ while True:
         elif values['irregular'] == True:
             janela3 = irregular()
             janela1.hide()
+    #Exibir o "sobre"
+    elif window == janela1 and event == "Sobre":
+        janela4 = sobre()
+        janela1.hide()
+    elif window == janela4 and event == sg.WIN_CLOSED:
+        break
+    elif window == janela4 and event == 'Voltar':
+        janela4.hide()
+        janela1.un_hide()
     # fechar segunda janela
     elif window == janela2 and event == sg.WIN_CLOSED:
         break
@@ -193,7 +215,14 @@ while True:
                 dados_excel1 = {'Tempo': t1, 'Elevação': elevacao_t, 'Velocidade Horizontal': vel_horizontal_t,
                                 'Velocidade Vertical': vel_vertical_t, 'Aceleração Horizontal': ac_horizontal_t, 'Aceleração Vertical': ac_vertical_t}
                 excel1 = pd.DataFrame(dados_excel1)
-                excel1.to_excel('airy_tempo.xlsx')
+                #Colocando Data e Hora no nome do arquivo
+                data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
+                excel_airy_tempo = "airy_tempo"
+                excel_extensao = ".xlsx"
+                excel1.to_excel(excel_airy_tempo + data_hora + excel_extensao)
+                #excel1.to_excel('airy_tempo.xlsx')
+
+                
 
             else:
                 # Plotando ao longo da profundidade
@@ -216,7 +245,13 @@ while True:
                 dados_excel2 = {'Profundidade': z1, 'Velocidade Horizontal': vel_horizontal_z, 'Velocidade Vertical': vel_vertical_z,
                                 'Aceleração Horizontal': ac_horizontal_z, 'Aceleração Vertical': ac_vertical_z}
                 excel2 = pd.DataFrame(dados_excel2)
-                excel2.to_excel('airy_profundidade.xlsx')
+                
+                #Colocando Data e Hora no nome do arquivo
+                data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
+                excel_airy_profundidade = "airy_profundidade"
+                excel_extensao = ".xlsx"
+                excel2.to_excel(excel_airy_profundidade + data_hora + excel_extensao)
+                #excel2.to_excel('airy_profundidade.xlsx')
 
         elif airy == False and stokes == True:
             # Chamar a classe Airy para o cálculo das variáveis percentuais
@@ -278,7 +313,14 @@ while True:
                 dados_excel3 = {'Tempo': t1, 'Elevação': elevacao_t, 'Velocidade Horizontal': vel_horizontal_t,
                                 'Velocidade Vertical': vel_vertical_t, 'Aceleração Horizontal': ac_horizontal_t, 'Aceleração Vertical': ac_vertical_t}
                 excel3 = pd.DataFrame(dados_excel3)
-                excel3.to_excel('stokes_tempo.xlsx')
+                
+                #Colocando Data e Hora no nome do arquivo
+                data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
+                excel_stokes_tempo = "stokes_tempo"
+                excel_extensao = ".xlsx"
+                excel3.to_excel(excel_stokes_tempo + data_hora + excel_extensao)
+                
+                #excel3.to_excel('stokes_tempo.xlsx')
 
             else:
                 # Plotando ao longo da profundidade
@@ -301,7 +343,14 @@ while True:
                 dados_excel4 = {'Profundidade': z1, 'Velocidade Horizontal': vel_horizontal_z, 'Velocidade Vertical': vel_vertical_z,
                                 'Aceleração Horizontal': ac_horizontal_z, 'Aceleração Vertical': ac_vertical_z}
                 excel4 = pd.DataFrame(dados_excel4)
-                excel4.to_excel('stokes_profundidade.xlsx')
+                
+                #Colocando Data e Hora no nome do arquivo
+                data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
+                excel_stokes_profundidade = "stokes_profundidade"
+                excel_extensao = ".xlsx"
+                excel4.to_excel(excel_stokes_profundidade + data_hora + excel_extensao)
+                
+                #excel4.to_excel('stokes_profundidade.xlsx')
 
     elif window == janela2 and event == 'Gerar Gráficos':
         button, values = janela2.Read()
@@ -322,36 +371,36 @@ while True:
                 if elevacao_regular == True:
                     plt.plot(t1, elevacao_t, 'darkred',
                              label='Elevação de Superfície')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Elevação(m)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Elevação (m)')
                 else:
                     pass
                 if vel_horizontal == True:
                     plt.plot(t1, vel_horizontal_t, 'b',
                              label='Velocidade Horizontal')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Velocidade(m/s)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Velocidade (m/s)')
                 else:
                     pass
                 if vel_vertical == True:
                     plt.plot(t1, vel_vertical_t, 'y',
                              label='Velocidade Vertical')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Velocidade(m/s)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Velocidade (m/s)')
                 else:
                     pass
                 if ac_horizontal == True:
                     plt.plot(t1, ac_horizontal_t, 'g',
                              label='Aceleração Horizontal')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Aceleração(m/s²)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Aceleração (m/s²)')
                 else:
                     pass
                 if ac_vertical == True:
                     plt.plot(t1, ac_vertical_t, 'dodgerblue',
                              label='Aceleração Vertical')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Aceleração(m/s²)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Aceleração (m/s²)')
                 else:
                     pass
                 plt.legend()
@@ -368,29 +417,29 @@ while True:
                 if vel_horizontal == True:
                     plt.plot(vel_horizontal_z, -z1, 'b',
                              label='Velocidade Horizontal')
-                    plt.xlabel('Velocidade(m/s)')
-                    plt.ylabel('Profundidade(m)')
+                    plt.xlabel('Velocidade (m/s)')
+                    plt.ylabel('Profundidade (m)')
                 else:
                     pass
                 if vel_vertical == True:
                     plt.plot(vel_vertical_z, -z1, 'y',
                              label='Velocidade Vertical')
-                    plt.xlabel('Velocidade(m/s)')
-                    plt.ylabel('Profundidade(m)')
+                    plt.xlabel('Velocidade (m/s)')
+                    plt.ylabel('Profundidade (m)')
                 else:
                     pass
                 if ac_horizontal == True:
                     plt.plot(ac_horizontal_z, -z1, 'g',
                              label='Aceleração Horizontal')
-                    plt.xlabel('Aceleração(m/s²)')
-                    plt.ylabel('Profundidade(m)')
+                    plt.xlabel('Aceleração (m/s²)')
+                    plt.ylabel('Profundidade (m)')
                 else:
                     pass
                 if ac_vertical == True:
                     plt.plot(ac_vertical_z, -z1, 'dodgerblue',
                              label='Aceleração Vertical')
-                    plt.xlabel('Aceleração(m/s²)')
-                    plt.ylabel('Profundidade(m)')
+                    plt.xlabel('Aceleração (m/s²)')
+                    plt.ylabel('Profundidade (m)')
                 else:
                     pass
                 plt.legend()
@@ -404,36 +453,36 @@ while True:
                 if elevacao_regular == True:
                     plt.plot(t1, elevacao_t, 'darkred',
                              label='Elevação de Superfície')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Elevação(m)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Elevação (m)')
                 else:
                     pass
                 if vel_horizontal == True:
                     plt.plot(t1, vel_horizontal_t, 'b',
                              label='Velocidade Horizontal')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Velocidade(m/s)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Velocidade (m/s)')
                 else:
                     pass
                 if vel_vertical == True:
                     plt.plot(t1, vel_vertical_t, 'y',
                              label='Velocidade Vertical')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Velocidade(m/s)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Velocidade (m/s)')
                 else:
                     pass
                 if ac_horizontal == True:
                     plt.plot(t1, ac_horizontal_t, 'g',
                              label='Aceleração Horizontal')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Aceleração(m/s²)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Aceleração (m/s²)')
                 else:
                     pass
                 if ac_vertical == True:
                     plt.plot(t1, ac_vertical_t, 'dodgerblue',
                              label='Aceleração Vertical')
-                    plt.xlabel('Tempo(s)')
-                    plt.ylabel('Aceleração(m/s²)')
+                    plt.xlabel('Tempo (s)')
+                    plt.ylabel('Aceleração (m/s²)')
                 else:
                     pass
                 plt.legend()
@@ -450,29 +499,29 @@ while True:
                 if vel_horizontal == True:
                     plt.plot(vel_horizontal_z, -z1, 'b',
                              label='Velocidade Horizontal')
-                    plt.xlabel('Velocidade(m/s)')
-                    plt.ylabel('Profundidade(m)')
+                    plt.xlabel('Velocidade (m/s)')
+                    plt.ylabel('Profundidade (m)')
                 else:
                     pass
                 if vel_vertical == True:
                     plt.plot(vel_vertical_z, -z1, 'y',
                              label='Velocidade Vertical')
-                    plt.xlabel('Velocidade(m/s)')
-                    plt.ylabel('Profundidade(m)')
+                    plt.xlabel('Velocidade (m/s)')
+                    plt.ylabel('Profundidade (m)')
                 else:
                     pass
                 if ac_horizontal == True:
                     plt.plot(ac_horizontal_z, -z1, 'g',
                              label='Aceleração Horizontal')
-                    plt.xlabel('Aceleração(m/s²)')
-                    plt.ylabel('Profundidade(m)')
+                    plt.xlabel('Aceleração (m/s²)')
+                    plt.ylabel('Profundidade (m)')
                 else:
                     pass
                 if ac_vertical == True:
                     plt.plot(ac_vertical_z, -z1, 'dodgerblue',
                              label='Aceleração Vertical')
-                    plt.xlabel('Aceleração(m/s²)')
-                    plt.ylabel('Profundidade(m)')
+                    plt.xlabel('Aceleração (m/s²)')
+                    plt.ylabel('Profundidade (m)')
                 else:
                     pass
                 plt.legend()
@@ -502,9 +551,12 @@ while True:
         vel_vertical = values['vel_vertical']
         ac_horizontal = values['ac_horizontal']
         ac_vertical = values['ac_vertical']
+        
+        #Capturando data e hora
+        data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
 
         if choice_pm == True and choice_jonswap == False:
-            pierson_moskowitz = PM(d, H, Tp, nOndas, x, z)
+            pierson_moskowitz = PM(d, H, Tp, nOndas, x, z, data_hora)
             # Momentos espectrais, Período de Cruzamento de Zeros e Desvio Padrão
             sp.init_printing(pretty_print=True)
             oo = math.inf
@@ -559,9 +611,16 @@ while True:
             dados_excel5 = {'Tempo': t1, 'Elevação': pm_elevacao, 'Velocidade Horizontal': pm_vel_horizontal,
                             'Velocidade Vertical': pm_vel_vertical, 'Aceleração Horizontal': pm_ac_horizontal, 'Aceleração Vertical': pm_ac_vertical}
             excel5 = pd.DataFrame(dados_excel5)
-            excel5.to_excel('pm_cinematica.xlsx')
+            
+            #Colocando Data e Hora no nome do arquivo
+            #data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
+            excel_pm_cinematica = "pm_cinematica"
+            excel_extensao = ".xlsx"
+            excel5.to_excel(excel_pm_cinematica + data_hora + excel_extensao)            
+            
+            #excel5.to_excel('pm_cinematica.xlsx')
         else:
-            jonswap = Jonswap(d, H, Tp, nOndas, x, z)
+            jonswap = Jonswap(d, H, Tp, nOndas, x, z, data_hora)
             # Momentos espectrais, Período de Cruzamento de Zeros e Desvio Padrão
             sp.init_printing(pretty_print=True)
             oo = math.inf
@@ -613,10 +672,17 @@ while True:
                     nwave = nwave + 1
                 j = j+1
             # Gravar arquivos em excel
-            dados_excel5 = {'Tempo': t1, 'Elevação': jonswap_elevacao, 'Velocidade Horizontal': jonswap_vel_horizontal,
+            dados_excel6 = {'Tempo': t1, 'Elevação': jonswap_elevacao, 'Velocidade Horizontal': jonswap_vel_horizontal,
                             'Velocidade Vertical': jonswap_vel_vertical, 'Aceleração Horizontal': jonswap_ac_horizontal, 'Aceleração Vertical': jonswap_ac_vertical}
-            excel5 = pd.DataFrame(dados_excel5)
-            excel5.to_excel('jonswap_cinematica.xlsx')
+            excel6 = pd.DataFrame(dados_excel6)
+            
+            #Colocando Data e Hora no nome do arquivo
+            #data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
+            excel_jonswap_cinematica = "jonswap_cinematica"
+            excel_extensao = ".xlsx"
+            excel6.to_excel(excel_jonswap_cinematica + data_hora + excel_extensao)            
+            
+            #excel6.to_excel('jonswap_cinematica.xlsx')
 
     elif window == janela3 and event == 'Gerar Gráficos':
         button, values = janela3.Read()
@@ -635,42 +701,42 @@ while True:
             if espectro == True:
                 plt.plot(pierson_moskowitz.w, pierson_moskowitz.pm, 'firebrick',
                          label='Espectro de Onda')
-                plt.xlabel('Frequência(Hz)')
-                plt.ylabel('Energia(m²/Hz)')
+                plt.xlabel('Frequência (Hz)')
+                plt.ylabel('Energia (m²/Hz)')
             else:
                 pass
             if elevacao == True:
                 plt.plot(t1, pm_elevacao, 'darkred',
                          label='Elevação de Superfíce')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Elevação(m)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Elevação (m)')
             else:
                 pass
             if vel_horizontal == True:
                 plt.plot(t1, pm_vel_horizontal, 'b',
                          label='Velocidade Horizontal')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Velocidade(m/s)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Velocidade (m/s)')
             else:
                 pass
             if vel_vertical == True:
                 plt.plot(t1, pm_vel_vertical, 'y', label='Velocidade Vertical')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Velocidade(m/s)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Velocidade (m/s)')
             else:
                 pass
             if ac_horizontal == True:
                 plt.plot(t1, pm_ac_horizontal, 'g',
                          label='Aceleração Horizontal')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Aceleração(m/s²)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Aceleração (m/s²)')
             else:
                 pass
             if ac_vertical == True:
                 plt.plot(t1, pm_ac_vertical, 'dodgerblue',
                          label='Aceleração Vertical')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Aceleração(m/s²)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Aceleração (m/s²)')
             else:
                 pass
             plt.legend()
@@ -683,43 +749,43 @@ while True:
             if espectro == True:
                 plt.plot(jonswap.w, jonswap.jp, 'firebrick',
                          label='Espectro de Onda')
-                plt.xlabel('Frequência(Hz)')
-                plt.ylabel('Energia(m²/Hz)')
+                plt.xlabel('Frequência (Hz)')
+                plt.ylabel('Energia (m²/Hz)')
             else:
                 pass
             if elevacao == True:
                 plt.plot(t1, jonswap_elevacao, 'darkred',
                          label='Elevação de Superfíce')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Elevação(m)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Elevação (m)')
             else:
                 pass
             if vel_horizontal == True:
                 plt.plot(t1, jonswap_vel_horizontal, 'b',
                          label='Velocidade Horizontal')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Velocidade(m/s)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Velocidade (m/s)')
             else:
                 pass
             if vel_vertical == True:
                 plt.plot(t1, jonswap_vel_vertical, 'y',
                          label='Velocidade Vertical')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Velocidade(m/s)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Velocidade (m/s)')
             else:
                 pass
             if ac_horizontal == True:
                 plt.plot(t1, jonswap_ac_horizontal, 'g',
                          label='Aceleração Horizontal')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Aceleração(m/s²)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Aceleração (m/s²)')
             else:
                 pass
             if ac_vertical == True:
                 plt.plot(t1, jonswap_ac_vertical, 'dodgerblue',
                          label='Aceleração Vertical')
-                plt.xlabel('Tempo(s)')
-                plt.ylabel('Aceleração(m/s²)')
+                plt.xlabel('Tempo (s)')
+                plt.ylabel('Aceleração (m/s²)')
             else:
                 pass
             plt.legend()

@@ -6,7 +6,7 @@ import pandas as pd
 
 
 class PM:
-    def __init__(self, profundidade, altura, periodo, qtdondas, x, z):
+    def __init__(self, profundidade, altura, periodo, qtdondas, x, z, data_hora):
         self.d = profundidade
         self.H = altura
         self.Tp = periodo
@@ -43,13 +43,27 @@ class PM:
         # Guardando dados no excel
         espectro_valores = {'Frequência': self.w, 'Energia': self.pm}
         excel_espectro = pd.DataFrame(espectro_valores)
-        excel_espectro.to_excel('espectro_pm.xlsx')
+        
+        #Colocando Data e Hora no nome do arquivo
+        #data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
+        excel_espectro_pm = "espectro_pm"
+        excel_extensao = ".xlsx"
+        excel_espectro.to_excel(excel_espectro_pm + data_hora + excel_extensao)        
+        
+        #excel_espectro.to_excel('espectro_pm.xlsx')
 
         # Guardando dados no excel - informações das ondas
         espectro_ondas_valores = {'Frequência': self.w, 'Período': self.T,
                                   'Amplitude': self.A, 'FaseInicial': self.fi, 'Comprimento': self.L}
         excel_espectro_ondas = pd.DataFrame(espectro_ondas_valores)
-        excel_espectro_ondas.to_excel('espectro_ondas_pm.xlsx')
+                
+        #Colocando Data e Hora no nome do arquivo
+        #data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
+        excel_espectro_ondas_pm = "espectro_ondas_pm"
+        excel_extensao = ".xlsx"
+        excel_espectro_ondas.to_excel(excel_espectro_ondas_pm + data_hora + excel_extensao)    
+        
+        #excel_espectro_ondas.to_excel('espectro_ondas_pm.xlsx')
 
     def espectro(self, w):
         return ((5/16)*(self.H**2)*((self.wp**4)/(w**5))*((self.e)**(-1.25*((w/self.wp)**(-4)))))
