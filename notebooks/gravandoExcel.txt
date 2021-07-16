@@ -1,0 +1,7 @@
+                # Gravar arquivos em excel
+                #dados_excel1 = {'Tempo': t1, 'Elevação': elevacao_t, 'Velocidade Horizontal': vel_horizontal_t,
+                #                'Velocidade Vertical': vel_vertical_t, 'Aceleração Horizontal': ac_horizontal_t, 'Aceleração Vertical': ac_vertical_t}
+                #DFdados_excel1 = pd.DataFrame(dados_excel1)
+                #excel1 = pd.ExcelWriter('airy_tempo.xlsx', engine='xlsxwriter')
+                #DFdados_excel1.to_excel(excel1)
+                #excel1.save()
