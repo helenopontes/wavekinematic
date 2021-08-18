@@ -27,17 +27,17 @@ sg.theme('LightGrey1')
 
 def inicio():
     layout = [
-        [sg.Text('Wave Kinematics é para cálculo das propriedades cinemáticas de ondas.')],
+        [sg.Text('Wave Kinematics é um programa com a finalidade de calcular as propriedades cinemáticas de ondas.')],
         [sg.Frame(layout=[[sg.Radio('Ondas Regulares', 'tipo', key='regular', default=True), sg.Radio(
             'Ondas Irregulares', 'tipo', key='irregular')]], title='Qual teoria de onda será utilizada?', title_color='black')],
         [sg.Button('Continuar'), sg.Button('Sobre')],
     ]
     return sg.Window(
-        'Wave Kinematics', layout=layout, finalize=True)
+        'Wave Kinematics - Inicio', layout=layout, finalize=True)
 
 def sobre():
     layout = [
-        [sg.Frame(layout=[[sg.Text('Autor: José Cícero de Assis Silva Junior\nVersão: 1.0\nCentro de Tecnologia-CTEC\nUniversidade Federal de Alagoas-UFAL\n2021')]], title='Sobre o aplicativo', title_color='black')],
+        [sg.Frame(layout=[[sg.Text('Autor: José Cícero de Assis Silva Junior\nVersão: 1.1\nCentro de Tecnologia-CTEC\nUniversidade Federal de Alagoas-UFAL\n2021')]], title='Sobre o aplicativo', title_color='black')],
         [sg.Button('Voltar')],
     ]
     return sg.Window(
@@ -124,11 +124,14 @@ while True:
     elif window == janela1 and event == "Sobre":
         janela4 = sobre()
         janela1.hide()
+    
+    #ocultar sobre ou fechar o programa
     elif window == janela4 and event == sg.WIN_CLOSED:
         break
     elif window == janela4 and event == 'Voltar':
         janela4.hide()
         janela1.un_hide()
+    
     # fechar segunda janela
     elif window == janela2 and event == sg.WIN_CLOSED:
         break
@@ -223,10 +226,7 @@ while True:
                 data_hora = datetime.now().strftime('_%Y_%m_%d_%H_%M_%S')
                 excel_airy_tempo = "Regular_Airy_Tempo"
                 excel_extensao = ".xlsx"
-                excel1.to_excel(excel_airy_tempo + data_hora + excel_extensao)
-                #excel1.to_excel('airy_tempo.xlsx')
-
-                
+                excel1.to_excel(excel_airy_tempo + data_hora + excel_extensao)                
 
             else:
                 # Plotando ao longo da profundidade
@@ -255,7 +255,6 @@ while True:
                 excel_airy_profundidade = "Regular_Airy_Profundidade"
                 excel_extensao = ".xlsx"
                 excel2.to_excel(excel_airy_profundidade + data_hora + excel_extensao)
-                #excel2.to_excel('airy_profundidade.xlsx')
 
         elif airy == False and stokes == True:
             # Chamar a classe Airy para o cálculo das variáveis percentuais
@@ -357,8 +356,6 @@ while True:
                 excel_stokes_profundidade = "Regular_Stokes_Profundidade"
                 excel_extensao = ".xlsx"
                 excel4.to_excel(excel_stokes_profundidade + data_hora + excel_extensao)
-                
-                #excel4.to_excel('stokes_profundidade.xlsx')
 
     elif window == janela2 and event == 'Gerar Gráficos':
         button, values = janela2.Read()
@@ -375,164 +372,231 @@ while True:
         if airy == True and stokes == False:
             if choice_tempo == True and choice_profundidade == False:
                 plt.clf()
-                plt.title('Teoria de Airy')
+
+                #Elevação de Superfície em uma Janela 
                 if elevacao_regular == True:
-                    plt.plot(t1, elevacao_t, 'darkred',
+                    plt.title('Teoria de Airy')
+                    plt.plot(t1, elevacao_t, 'r',
                              label='Elevação de Superfície')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Elevação (m)')
+                    plt.legend()
                 else:
                     pass
+                plt.grid()
+
+                #Velocidades em uma Janela 
                 if vel_horizontal == True:
+                    figure2 = plt.figure('Figure 2.png')
+                    plt.title('Teoria de Airy')
                     plt.plot(t1, vel_horizontal_t, 'b',
                              label='Velocidade Horizontal')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Velocidade (m/s)')
+                    plt.legend()
                 else:
                     pass
                 if vel_vertical == True:
-                    plt.plot(t1, vel_vertical_t, 'y',
+                    figure2 = plt.figure('Figure 2.png')
+                    plt.title('Teoria de Airy')
+                    plt.plot(t1, vel_vertical_t, 'g',
                              label='Velocidade Vertical')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Velocidade (m/s)')
+                    plt.legend()
                 else:
                     pass
+                plt.grid()
+
+                #Acelerações em uma Janela 
                 if ac_horizontal == True:
-                    plt.plot(t1, ac_horizontal_t, 'g',
+                    figure3 = plt.figure('Figure 3.png')
+                    plt.title('Teoria de Airy')
+                    plt.plot(t1, ac_horizontal_t, 'b',
                              label='Aceleração Horizontal')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Aceleração (m/s²)')
+                    plt.legend()
                 else:
                     pass
                 if ac_vertical == True:
-                    plt.plot(t1, ac_vertical_t, 'dodgerblue',
+                    figure3 = plt.figure('Figure 3.png')
+                    plt.title('Teoria de Airy')
+                    plt.plot(t1, ac_vertical_t, 'g',
                              label='Aceleração Vertical')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Aceleração (m/s²)')
+                    plt.legend()    
                 else:
                     pass
-                plt.legend()
                 plt.grid()
                 plt.show()
-
+            
             elif choice_tempo == False and choice_profundidade == True:
                 plt.clf()
-                plt.title('Teoria de Airy')
                 if elevacao_regular == True:
                     pass
                 else:
                     pass
-                if vel_horizontal == True:
+
+                #Velocidades em uma Janela 
+                if vel_horizontal == True:                    
+                    plt.title('Teoria de Airy')
                     plt.plot(vel_horizontal_z, -z1, 'b',
                              label='Velocidade Horizontal')
                     plt.xlabel('Velocidade (m/s)')
                     plt.ylabel('Profundidade (m)')
+                    plt.legend()
                 else:
                     pass
-                if vel_vertical == True:
-                    plt.plot(vel_vertical_z, -z1, 'y',
+
+                if vel_vertical == True:                    
+                    plt.title('Teoria de Airy')
+                    plt.plot(vel_vertical_z, -z1, 'g',
                              label='Velocidade Vertical')
                     plt.xlabel('Velocidade (m/s)')
                     plt.ylabel('Profundidade (m)')
+                    plt.legend()
                 else:
                     pass
-                if ac_horizontal == True:
-                    plt.plot(ac_horizontal_z, -z1, 'g',
+                plt.grid()
+
+                #Acelerações em uma Janela 
+                if ac_horizontal == True:                    
+                    plt.title('Teoria de Airy')
+                    figure2 = plt.figure('Figure 2.png')
+                    plt.plot(ac_horizontal_z, -z1, 'b',
                              label='Aceleração Horizontal')
                     plt.xlabel('Aceleração (m/s²)')
                     plt.ylabel('Profundidade (m)')
+                    plt.legend()
                 else:
                     pass
                 if ac_vertical == True:
-                    plt.plot(ac_vertical_z, -z1, 'dodgerblue',
+                    plt.title('Teoria de Airy')
+                    figure2 = plt.figure('Figure 2.png')
+                    plt.plot(ac_vertical_z, -z1, 'g',
                              label='Aceleração Vertical')
                     plt.xlabel('Aceleração (m/s²)')
                     plt.ylabel('Profundidade (m)')
+                    plt.legend()
                 else:
                     pass
-                plt.legend()
                 plt.grid()
                 plt.show()
 
         elif airy == False and stokes == True:
             if choice_tempo == True and choice_profundidade == False:
                 plt.clf()
-                plt.title('Teoria de Stokes')
+
+                #Elevação em uma  Janela
                 if elevacao_regular == True:
-                    plt.plot(t1, elevacao_t, 'darkred',
+                    plt.title('Teoria de Stokes')
+                    plt.plot(t1, elevacao_t, 'r',
                              label='Elevação de Superfície')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Elevação (m)')
+                    plt.legend()
                 else:
                     pass
+                plt.grid()
+
+                #Velocidades em uma Janela
                 if vel_horizontal == True:
+                    plt.title('Teoria de Stokes')
+                    figure2 = plt.figure('Figure 2.png')
                     plt.plot(t1, vel_horizontal_t, 'b',
                              label='Velocidade Horizontal')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Velocidade (m/s)')
+                    plt.legend()
                 else:
                     pass
                 if vel_vertical == True:
-                    plt.plot(t1, vel_vertical_t, 'y',
+                    plt.title('Teoria de Stokes')
+                    figure2 = plt.figure('Figure 2.png')
+                    plt.plot(t1, vel_vertical_t, 'g',
                              label='Velocidade Vertical')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Velocidade (m/s)')
+                    plt.legend()
                 else:
                     pass
+                plt.grid()
+
+                #Acelerações em uma Janela
                 if ac_horizontal == True:
-                    plt.plot(t1, ac_horizontal_t, 'g',
+                    plt.title('Teoria de Stokes')
+                    figure3 = plt.figure('Figure 3.png')
+                    plt.plot(t1, ac_horizontal_t, 'b',
                              label='Aceleração Horizontal')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Aceleração (m/s²)')
+                    plt.legend()
                 else:
                     pass
                 if ac_vertical == True:
-                    plt.plot(t1, ac_vertical_t, 'dodgerblue',
+                    plt.title('Teoria de Stokes')
+                    figure3 = plt.figure('Figure 3.png')
+                    plt.plot(t1, ac_vertical_t, 'g',
                              label='Aceleração Vertical')
                     plt.xlabel('Tempo (s)')
                     plt.ylabel('Aceleração (m/s²)')
+                    plt.legend()
                 else:
                     pass
-                plt.legend()
                 plt.grid()
                 plt.show()
 
             elif choice_tempo == False and choice_profundidade == True:
                 plt.clf()
-                plt.title('Teoria de Stokes')
                 if elevacao_regular == True:
                     pass
                 else:
                     pass
+
+                #Velocidades em uma Janela
                 if vel_horizontal == True:
+                    plt.title('Teoria de Stokes')
                     plt.plot(vel_horizontal_z, -z1, 'b',
                              label='Velocidade Horizontal')
                     plt.xlabel('Velocidade (m/s)')
                     plt.ylabel('Profundidade (m)')
+                    plt.legend()
                 else:
                     pass
                 if vel_vertical == True:
-                    plt.plot(vel_vertical_z, -z1, 'y',
+                    plt.title('Teoria de Stokes')
+                    plt.plot(vel_vertical_z, -z1, 'g',
                              label='Velocidade Vertical')
                     plt.xlabel('Velocidade (m/s)')
                     plt.ylabel('Profundidade (m)')
+                    plt.legend()
                 else:
                     pass
+                plt.grid()
+
+                #Acelerações em uma Janela
                 if ac_horizontal == True:
-                    plt.plot(ac_horizontal_z, -z1, 'g',
+                    plt.title('Teoria de Stokes')
+                    figure2 = plt.figure('Figure 2.png')
+                    plt.plot(ac_horizontal_z, -z1, 'b',
                              label='Aceleração Horizontal')
                     plt.xlabel('Aceleração (m/s²)')
                     plt.ylabel('Profundidade (m)')
+                    plt.legend()
                 else:
                     pass
                 if ac_vertical == True:
-                    plt.plot(ac_vertical_z, -z1, 'dodgerblue',
+                    plt.title('Teoria de Stokes')
+                    figure2 = plt.figure('Figure 2.png')
+                    plt.plot(ac_vertical_z, -z1, 'g',
                              label='Aceleração Vertical')
                     plt.xlabel('Aceleração (m/s²)')
                     plt.ylabel('Profundidade (m)')
+                    plt.legend()
                 else:
                     pass
-                plt.legend()
                 plt.grid()
                 plt.show()
 
@@ -630,7 +694,6 @@ while True:
             excel_extensao = ".xlsx"
             excel5.to_excel(excel_pm_cinematica + data_hora + excel_extensao)            
             
-            #excel5.to_excel('pm_cinematica.xlsx')
         else:
             jonswap = Jonswap(d, H, Tp, nOndas, x, z, data_hora)
             # Momentos espectrais, Período de Cruzamento de Zeros e Desvio Padrão
@@ -697,8 +760,6 @@ while True:
             excel_jonswap_cinematica = "Irregular_Jp_Cinematica"
             excel_extensao = ".xlsx"
             excel6.to_excel(excel_jonswap_cinematica + data_hora + excel_extensao)            
-            
-            #excel6.to_excel('jonswap_cinematica.xlsx')
 
     elif window == janela3 and event == 'Gerar Gráficos':
         button, values = janela3.Read()
@@ -713,97 +774,146 @@ while True:
 
         if choice_pm == True and choice_jonswap == False:
             plt.clf()
-            plt.title('Espectro de Pierson-Moskowitz')
+            #Separando em janelas
             if espectro == True:
-                plt.plot(pierson_moskowitz.w, pierson_moskowitz.pm, 'firebrick',
+                plt.title('Espectro de Pierson-Moskowitz')
+                plt.plot(pierson_moskowitz.w, pierson_moskowitz.pm, 'r',
                          label='Espectro de Onda')
                 plt.xlabel('Frequência (Hz)')
                 plt.ylabel('Energia (m²/Hz)')
+                plt.legend()
             else:
                 pass
+            plt.grid()
+
+            #Janela da elevação
             if elevacao == True:
-                plt.plot(t1, pm_elevacao, 'darkred',
+                plt.title('Espectro de Pierson-Moskowitz')
+                figure2 = plt.figure('Figure 2.png')
+                plt.plot(t1, pm_elevacao, 'r',
                          label='Elevação de Superfíce')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Elevação (m)')
+                plt.legend()
             else:
                 pass
+            plt.grid()
+
+            #Janela das velocidades
             if vel_horizontal == True:
+                plt.title('Espectro de Pierson-Moskowitz')
+                figure3 = plt.figure('Figure 3.png')
                 plt.plot(t1, pm_vel_horizontal, 'b',
                          label='Velocidade Horizontal')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Velocidade (m/s)')
+                plt.legend()
             else:
                 pass
             if vel_vertical == True:
-                plt.plot(t1, pm_vel_vertical, 'y', label='Velocidade Vertical')
+                plt.title('Espectro de Pierson-Moskowitz')
+                figure3 = plt.figure('Figure 3.png')
+                plt.plot(t1, pm_vel_vertical, 'g', label='Velocidade Vertical')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Velocidade (m/s)')
+                plt.legend()
             else:
                 pass
+            plt.grid()
+            #Janela das acelerações
             if ac_horizontal == True:
-                plt.plot(t1, pm_ac_horizontal, 'g',
+                plt.title('Espectro de Pierson-Moskowitz')
+                figure4 = plt.figure('Figure 4.png')
+                plt.plot(t1, pm_ac_horizontal, 'b',
                          label='Aceleração Horizontal')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Aceleração (m/s²)')
+                plt.legend()
             else:
                 pass
             if ac_vertical == True:
-                plt.plot(t1, pm_ac_vertical, 'dodgerblue',
+                plt.title('Espectro de Pierson-Moskowitz')
+                figure4 = plt.figure('Figure 4.png')
+                plt.plot(t1, pm_ac_vertical, 'g',
                          label='Aceleração Vertical')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Aceleração (m/s²)')
+                plt.legend()
             else:
                 pass
-            plt.legend()
             plt.grid()
             plt.show()
 
         elif choice_pm == False and choice_jonswap == True:
             plt.clf()
-            plt.title('Espectro de JONSWAP')
+            #Separando os gráficos em janelas
             if espectro == True:
-                plt.plot(jonswap.w, jonswap.jp, 'firebrick',
+                plt.title('Espectro de JONSWAP')
+                plt.plot(jonswap.w, jonswap.jp, 'r',
                          label='Espectro de Onda')
                 plt.xlabel('Frequência (Hz)')
                 plt.ylabel('Energia (m²/Hz)')
+                plt.legend()
             else:
                 pass
+            plt.grid()
+
+            #Janela da elevação
             if elevacao == True:
-                plt.plot(t1, jonswap_elevacao, 'darkred',
+                plt.title('Espectro de JONSWAP')
+                figure2 = plt.figure('Figure 2.png')
+                plt.plot(t1, jonswap_elevacao, 'r',
                          label='Elevação de Superfíce')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Elevação (m)')
+                plt.legend()
             else:
                 pass
+            plt.grid()
+
+            #Janela das velocidades
             if vel_horizontal == True:
+                plt.title('Espectro de JONSWAP')
+                figure3 = plt.figure('Figure 3.png')
                 plt.plot(t1, jonswap_vel_horizontal, 'b',
                          label='Velocidade Horizontal')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Velocidade (m/s)')
+                plt.legend()
             else:
                 pass
             if vel_vertical == True:
-                plt.plot(t1, jonswap_vel_vertical, 'y',
+                plt.title('Espectro de JONSWAP')
+                figure3 = plt.figure('Figure 3.png')
+                plt.plot(t1, jonswap_vel_vertical, 'g',
                          label='Velocidade Vertical')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Velocidade (m/s)')
+                plt.legend()
             else:
                 pass
+            plt.grid()
+
+            #Janela das acelerações
             if ac_horizontal == True:
-                plt.plot(t1, jonswap_ac_horizontal, 'g',
+                plt.title('Espectro de JONSWAP')
+                figure4 = plt.figure('Figure 4.png')
+                plt.plot(t1, jonswap_ac_horizontal, 'b',
                          label='Aceleração Horizontal')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Aceleração (m/s²)')
+                plt.legend()
             else:
                 pass
             if ac_vertical == True:
-                plt.plot(t1, jonswap_ac_vertical, 'dodgerblue',
+                plt.title('Espectro de JONSWAP')
+                figure4 = plt.figure('Figure 4.png')
+                plt.plot(t1, jonswap_ac_vertical, 'g',
                          label='Aceleração Vertical')
                 plt.xlabel('Tempo (s)')
                 plt.ylabel('Aceleração (m/s²)')
+                plt.legend()
             else:
                 pass
-            plt.legend()
             plt.grid()
             plt.show()
